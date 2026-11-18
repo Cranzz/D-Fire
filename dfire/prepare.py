@@ -2,12 +2,46 @@
 import argparse
 import hashlib
 import json
+import shutil
+from PIL import Image, ImageOps
 from pathlib import Path
 import yaml
 from ultralytics.data.utils import IMG_FORMATS
 
 SOURCE = 'https://github.com/gaiasd/DFireDataset#computer-download-links'
 HANDLE = 'sayedgamal99/smoke-fire-detection-yolo'
+
+
+def writable_copy(root, destination):
+    """Copy mounted data once, repair JPEG endings before hashing, and log changes."""
+    root, destination = Path(root).resolve(), Path(destination).resolve()
+    if root == destination or root in destination.parents or destination.exists():
+        raise ValueError('Use a new destination outside the source; existing copies are not overwritten')
+    size = sum(p.stat().st_size for p in root.rglob('*') if p.is_file())
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    if shutil.disk_usage(destination.parent).free < size + 1024 ** 3:
+        raise OSError('Insufficient disk space for writable data copy plus 1 GiB reserve')
+    shutil.copytree(root, destination)
+    changes = []
+    for path in sorted(destination.rglob('*')):
+        if path.suffix.lower() not in ('.jpg', '.jpeg') or not path.is_file():
+            continue
+        with path.open('rb') as stream:
+            stream.seek(-2, 2)
+            ending = stream.read()
+        if ending == b'\xff\xd9':
+            continue
+        before = hashlib.sha256(path.read_bytes()).hexdigest()
+        # Match pinned Ultralytics JPEG repair; fail visibly if decoding fails.
+        with Image.open(path) as image:
+            image.verify()
+        with Image.open(path) as image:
+            ImageOps.exif_transpose(image).save(path, 'JPEG', subsampling=0, quality=100)
+        changes.append(dict(file=str(path.relative_to(destination)), before_sha256=before,
+                            after_sha256=hashlib.sha256(path.read_bytes()).hexdigest()))
+    (destination / 'jpeg-repairs.json').write_text(json.dumps(changes, indent=2))
+    print(f'Writable copy ready: {destination}; repaired JPEGs: {len(changes)}')
+    return destination
 
 
 def prepare(root, output):

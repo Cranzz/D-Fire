@@ -20,3 +20,9 @@ Notebook 代码单元语法检查通过，云端 Notebook 尚未实际执行。�
 ## 数据入口修复
 
 新增 `dfire.prepare` 和 Notebook 数据下载步骤；官方来源为 gaiasd/DFireDataset README 推荐的 Kaggle 副本 `sayedgamal99/smoke-fire-detection-yolo`。公开文件列表确认根目录 data.yaml 与 data/test/images；完整数据下载、实际 YAML 和 Colab 执行仍待云端验证。配置生成器按下载包真实 YAML 类别顺序生成路径，不重新划分；使用目录夹具验证路径重建、类别保持和异常类别拒绝。修复后本地测试 **7 passed**，Notebook 代码单元语法检查通过。
+
+## Kaggle 只读 JPEG 修复（2026-11-19）
+
+用户真实 baseline 验证输出为 3094/3099 图像，五张 WEB JPEG 因修复时写入 /kaggle/input 被拒绝。该次 mAP50=0.731、mAP50–95=0.416 仅是用户提供的部分验证集结果，不登记为完整协议研究结果。训练集是否受影响尚需扫描日志确认。
+
+Notebook 现在将数据复制到 /kaggle/working/dfire-data；JPEG 结束标记异常时采用锁定上游相同的 PIL 重存操作，并在 jpeg-repairs.json 保存修改前后哈希，之后再生成数据清单。原挂载数据不修改。目标目录必须是新目录，空间不足或图像不可解码时明确报错，不自动删除或覆盖已有副本。目录复制与 JPEG 修复测试通过；实际五张图像的修复及有效验证张数仍需 Kaggle 核实。

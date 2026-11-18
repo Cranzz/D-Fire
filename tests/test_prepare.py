@@ -23,3 +23,21 @@ def test_prepare_preserves_classes_and_split_and_ignores_foreign_paths(tmp_path)
     (source / 'data.yaml').write_text('names: [unknown, fire]')
     with pytest.raises(ValueError, match='classes'):
         prepare(source, output)
+
+
+def test_writable_copy_repairs_jpeg_without_modifying_source(tmp_path):
+    from PIL import Image
+    from dfire.prepare import writable_copy
+    import json
+    source = tmp_path / 'source'
+    source.mkdir()
+    image = source / 'missing-end.jpg'
+    Image.new('RGB', (32, 32), 'red').save(image)
+    image.write_bytes(image.read_bytes() + b'trailing-bytes')
+    original = image.read_bytes()
+    target = writable_copy(source, tmp_path / 'writable')
+    assert image.read_bytes() == original
+    assert (target / image.name).read_bytes().endswith(b'\xff\xd9')
+    assert len(json.loads((target / 'jpeg-repairs.json').read_text())) == 1
+    with pytest.raises(ValueError, match='existing'):
+        writable_copy(source, target)
