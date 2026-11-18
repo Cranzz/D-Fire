@@ -16,3 +16,7 @@
 Notebook 代码单元语法检查通过，云端 Notebook 尚未实际执行。尚未进行真实 D-Fire 训练、CUDA/AMP 验证、吞吐量基准或多 seed 研究实验。合成数据指标不报告为研究结果。
 
 参数量吻合是结构核对证据，不能证明未披露细节完全等同作者实现，更不能证明精度复现成功。GFLOPs 目前仅观察到上游摘要约 6.1，尚未做逐模块严格核对。
+
+## 数据入口修复
+
+新增 `dfire.prepare` 和 Notebook 数据下载步骤；官方来源为 gaiasd/DFireDataset README 推荐的 Kaggle 副本 `sayedgamal99/smoke-fire-detection-yolo`。公开文件列表确认根目录 data.yaml 与 data/test/images；完整数据下载、实际 YAML 和 Colab 执行仍待云端验证。配置生成器按下载包真实 YAML 类别顺序生成路径，不重新划分；使用目录夹具验证路径重建、类别保持和异常类别拒绝。修复后本地测试 **7 passed**，Notebook 代码单元语法检查通过。

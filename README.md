@@ -54,6 +54,6 @@ python -m dfire.cli eval --weights /persistent/runs/hife-s20260716/weights/best.
 - [Colab / Kaggle 共用 Notebook](notebooks/cloud.ipynb)；[在 Colab 打开](https://colab.research.google.com/github/Cranzz/D-Fire/blob/main/notebooks/cloud.ipynb)。Kaggle 导入该 Notebook，并开启 GPU / Internet。
 - [本地验证记录](docs/validation.md)：6 项测试及合成数据 CLI 训练验证，云端 GPU 待验证。
 - [实现规格、已知差异与首轮实验](docs/implementation.md)。`baseline / msghost / retention / ctd / hife` 对应原版、单模块消融与完整模型。
-- 真实数据 YAML 必须核对类别顺序；脚本不下载数据，不猜测作者测试文件。不提交数据、权重、输出或凭据。
+- Notebook 现已包含官方 README 推荐的 Kaggle 数据副本下载和路径配置；读取包内类别顺序、保留其划分。该划分不等同于已确认的 HIFE 作者划分。自备数据 YAML 仍需核对类别顺序；脚本不猜测作者测试文件。不提交数据、权重、输出或凭据。
 
 工程测试使用微型合成数据验证训练、检查点和评测，其指标没有科学意义。依赖与本项目采用 AGPL-3.0，见 LICENSE 与 NOTICE。
