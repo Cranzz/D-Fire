@@ -51,7 +51,7 @@ python -m dfire.cli eval --weights /persistent/runs/hife-s20260716/weights/best.
 
 中断恢复：在相同环境使用 `train --resume /persistent/runs/<run>/weights/last.pt`，仍需提供 `--data`、`--name`；检查点保留原模型结构和训练协议。完整训练前先通过工程测试。
 
-- [Colab / Kaggle 共用 Notebook](notebooks/cloud.ipynb)；[在 Colab 打开](https://colab.research.google.com/github/Cranzz/D-Fire/blob/main/notebooks/cloud.ipynb)。Kaggle 导入该 Notebook，并开启 GPU / Internet。
+- [Colab / Kaggle 共用 Notebook](notebooks/cloud.ipynb)；[在 Colab 打开](https://colab.research.google.com/github/Cranzz/D-Fire/blob/main/notebooks/cloud.ipynb)。Kaggle 通过 File → Import Notebook 导入该 Notebook 的 GitHub 地址，Add Input 添加 smoke-fire-detection-yolo，并开启 GPU / Internet；自动读取已挂载数据。
 - [本地验证记录](docs/validation.md)：6 项测试及合成数据 CLI 训练验证，云端 GPU 待验证。
 - [实现规格、已知差异与首轮实验](docs/implementation.md)。`baseline / msghost / retention / ctd / hife` 对应原版、单模块消融与完整模型。
 - Notebook 现已包含官方 README 推荐的 Kaggle 数据副本下载和路径配置；读取包内类别顺序、保留其划分。该划分不等同于已确认的 HIFE 作者划分。自备数据 YAML 仍需核对类别顺序；脚本不猜测作者测试文件。不提交数据、权重、输出或凭据。
