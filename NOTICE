@@ -1,0 +1,5 @@
+D-Fire research code: independent reconstruction of HIFE-YOLO (2026),
+https://doi.org/10.3390/fire9110478. Not an official implementation.
+Uses and subclasses Ultralytics (https://github.com/ultralytics/ultralytics),
+licensed under GNU AGPL-3.0. This project is distributed under AGPL-3.0;
+see LICENSE. No author source code, paper full text, dataset or weights are redistributed.

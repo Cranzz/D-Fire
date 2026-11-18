@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dfire-research"
+version = "0.1.0"
+license = {text = "AGPL-3.0-only"}
+requires-python = ">=3.12,<3.14"
+dependencies = ["ultralytics==8.4.41", "ultralytics-thop==2.0.18"]
+
+[project.optional-dependencies]
+test = ["pytest>=8,<10"]
+
+[project.scripts]
+dfire = "dfire.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["dfire*"]

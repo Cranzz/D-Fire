@@ -27,3 +27,4 @@ wandb/
 kaggle.json
 credentials*.json
 service-account*.json
+*.egg-info/

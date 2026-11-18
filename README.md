@@ -2,7 +2,7 @@
 
 从零建立研究项目，以 YOLO11n 为基础对照、HIFE-YOLO 为首选论文对标对象，在同一协议下复现、改进并验证能否超过对标模型。
 
-**状态（2026-11-18）：方案与复现协议已核查；尚无模型实现、训练结果或复现成功声明。** 本项目不继承此前沙箱的代码、权重或实验数字。仓库计划公开。
+**状态（2026-11-18）：已提供独立重建模型、云端训练入口及工程测试；尚无真实数据训练结果或复现成功声明。** 本项目不继承此前沙箱的代码、权重或实验数字。仓库已公开。
 
 ## 研究路线
 
@@ -35,8 +35,25 @@
 - [文献与复现边界](docs/references.md)：论文链接、已核查事实与待核查项。
 - [实验登记模板](experiments/registry.csv)：逐次记录配置、权重和指标来源。
 
-## 当前不提供训练命令的原因
+## 安装与运行
 
-模型实现、依赖安装验证和数据准备尚未完成。后续训练命令将与真正运行通过的入口一起提交；现在不提供无法执行的占位命令或伪造结果。
+建议 Python 3.12，并使用平台提供的兼容 PyTorch/CUDA。
 
-数据集、模型权重、训练输出和账号凭据不进入 Git 仓库。数据许可与依赖许可在实际引入时逐项核查；不重新分发第三方论文全文或作者代码。
+```bash
+pip install -e '.[test]'
+pytest -q
+python -m dfire.cli audit --model hife
+python -m dfire.manifest --data /path/to/data.yaml --output /persistent/data-manifest.json
+python -m dfire.cli train --model baseline --data /path/to/data.yaml --project /persistent/runs --name baseline-s20260716
+python -m dfire.cli train --model hife --data /path/to/data.yaml --project /persistent/runs --name hife-s20260716
+python -m dfire.cli eval --weights /persistent/runs/hife-s20260716/weights/best.pt --data /path/to/data.yaml --split val
+```
+
+中断恢复：在相同环境使用 `train --resume /persistent/runs/<run>/weights/last.pt`，仍需提供 `--data`、`--name`；检查点保留原模型结构和训练协议。完整训练前先通过工程测试。
+
+- [Colab / Kaggle 共用 Notebook](notebooks/cloud.ipynb)；[在 Colab 打开](https://colab.research.google.com/github/Cranzz/D-Fire/blob/main/notebooks/cloud.ipynb)。Kaggle 导入该 Notebook，并开启 GPU / Internet。
+- [本地验证记录](docs/validation.md)：6 项测试及合成数据 CLI 训练验证，云端 GPU 待验证。
+- [实现规格、已知差异与首轮实验](docs/implementation.md)。`baseline / msghost / retention / ctd / hife` 对应原版、单模块消融与完整模型。
+- 真实数据 YAML 必须核对类别顺序；脚本不下载数据，不猜测作者测试文件。不提交数据、权重、输出或凭据。
+
+工程测试使用微型合成数据验证训练、检查点和评测，其指标没有科学意义。依赖与本项目采用 AGPL-3.0，见 LICENSE 与 NOTICE。
