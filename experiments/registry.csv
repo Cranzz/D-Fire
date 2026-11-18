@@ -1,0 +1,1 @@
+run_id,phase,model,implementation_kind,git_commit,config_sha256,data_manifest_sha256,seed,pretrained,imgsz,batch,epochs,platform,gpu,environment_record,checkpoint_uri,metrics_uri,status,notes
